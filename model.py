@@ -1,25 +1,43 @@
 from fastai import *
 from fastai.text import *
 
+learn = prepare_learner()
 
 
 def get_prediction(text):
     """ return the prediction value of the text
     text: plain text  """
+    
+    print("I am in get prediction")
+    x = learn.predict(text)
+    print('my predictions are : 'x)
+    return np.argmax(x[-1],0)
     pass
 
 def predict_file(data_file):
     """ add Predict column to data_file
     data_file: csv file """
+    
+    df = pd.read_csv(path)
+    review = df.iloc[:,0]
+    prediction = [get_prediction(i,learn).tolist() for i in review]
+    df['predictions'] = prediction
+    
+    
+    df.to_csv(path)
+    
+    
+    return prediction
+ 
     pass
 
 
-# def prepare_learner(path ='',bs=48):
-#     data_clas = TextClasDataBunch.load(path, 'tmp_clas', bs=bs)
-#     learn = text_classifier_learner(data_clas, drop_mult=0.5)
-#     learn.load_encoder('fine_tuned_enc')
-#     learn.load('third')
-#     return learn
+def prepare_learner(path ='',bs=48):
+    data_clas = TextClasDataBunch.load(path, 'tmp_clas', bs=bs)
+    learn = text_classifier_learner(data_clas, drop_mult=0.5)
+    learn.load_encoder('fine_tuned_enc')
+    learn.load('third')
+    return learn
 
 # def prepare_learner_cpu(model_path='',name='fine_tuned_enc',path ='',bs=48):
 #     model_path = '/home/ahmed/Documents/data/Prototype/models/'
